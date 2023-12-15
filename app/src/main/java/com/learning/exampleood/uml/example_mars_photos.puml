@@ -1,0 +1,49 @@
+@startuml
+
+class ui.MainActivity {
+- fun updateMarsImage(url: String)
+- updateButtons(state: ButtonState)
+}
+
+class ui.MarsViewModel{
+- photoList: List<MarsPhoto>
+- currentPhotoPosition: Int = 0
+
+- _marsPhotoUrl: MutableLiveData<String>
++ marsPhotoUrl: LiveData<String>
+
+- _buttonState: MutableLiveData<ButtonState>
++ buttonState: LiveData<ButtonState>
+
++ getMarsPhotos()
++ nextImage()
++ previousImage()
+}
+
+enum ui.ButtonState{
+LEFT_ENABLED
+BOTH_ENABLED
+RIGHT_ENABLED
+}
+
+class data.MarsApi {
++ retrofitService: MarsApiService
+}
+
+interface data.MarsApiService{
++ getPhotos(): List<MarsPhoto>
+}
+
+class data.MarsPhoto {
++ id: String
++ img_src: String
+}
+
+ui.MainActivity o-d-> ui.MarsViewModel
+ui.MarsViewModel -> ui.ButtonState
+ui.MarsViewModel -r-> data.MarsPhoto
+ui.MarsViewModel o-d-> data.MarsApi
+data.MarsApi *-d-> data.MarsApiService
+data.MarsApi -l-> data.MarsPhoto
+
+@enduml
